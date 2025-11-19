@@ -69,9 +69,9 @@ The database uses tables for users, halls, meals, reservations, chats, messages 
 
 ---
 
-## Running it (dev)
+## Running it
 
-> This is an older React Native project (from my degree), originally set up around RN + Android Gradle Plugin 7.x. On a modern setup you may need to tweak Gradle/SDK versions if you want to actually build the Android app.
+> This is an older React Native project from 2023, most libraries will be outdated, aswell as other services such as gradle. 
 
 ### Backend
 
