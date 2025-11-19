@@ -96,7 +96,7 @@ npx react-native start
 
 # Run on Android (SDK + device/emulator required)
 npx react-native run-android
-
+```
 ### What I’d change if I revisited it
 
 If I were rebuilding Fresher now, I’d:
@@ -105,4 +105,4 @@ If I were rebuilding Fresher now, I’d:
 - Clean up SQL (no string interpolation) and split the backend into clearer modules
 - Add proper validation, error states, and tests
 - I’ve left most of the original structure in place so it shows honestly where my React Native / Node skills were at the time.
-```
+
