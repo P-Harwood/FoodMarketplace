@@ -84,9 +84,10 @@ Runs migrations on Database.sqlite
 Serves HTTP + websockets on port 5000
 Serves static files from public/
 The mobile app expects the base URL from Config("url") to point here (e.g. http://192.168.x.x:5000 on the same network).
-
+```
 
 ### Mobile app
+```bash
 # from the React Native app root
 npm install
 
@@ -104,3 +105,4 @@ If I were rebuilding Fresher now, I’d:
 - Clean up SQL (no string interpolation) and split the backend into clearer modules
 - Add proper validation, error states, and tests
 - I’ve left most of the original structure in place so it shows honestly where my React Native / Node skills were at the time.
+```
