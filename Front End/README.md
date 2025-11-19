@@ -1,3 +1,6 @@
+FoodMarketplace
+React Native app where university students buy and sell home-cooked meals with each other inside their accommodation.
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
