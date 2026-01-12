@@ -54,6 +54,8 @@ const calculateDelay = (expirationTime) => {
     return delay > 0 ? Math.ceil(delay / (1000 * 60)): 0; // converts delay to minutes if the time has not passed, if it has it returns 0 so that the operation can be carried out instantly
 }
 
+const timingFields = ["order_start", "order_end", "serving_start", "serving_end"];
+
 const updateMealField = async (meal_ID) => {
     try {
         // Logic to update meal fields (e.g., change time_status)
@@ -62,12 +64,7 @@ const updateMealField = async (meal_ID) => {
         if (listingDetails && listingDetails.meal_status !== "CANCELLED"){
             console.log(`Updating meal status ${listingDetails}`);
 
-            const timings = [
-                calculateDelay(new Date(listingDetails.order_start)),
-                calculateDelay(new Date(listingDetails.order_end)),
-                calculateDelay(new Date(listingDetails.serving_start)),
-                calculateDelay(new Date(listingDetails.serving_end))
-            ];
+            const timings = timingFields.map(field => calculateDelay(new Date(listingDetails[field])));
 
             let status;
             if (timings[0] !== 0) {
@@ -119,7 +116,7 @@ const addCronTimes = (listingDetails) => {
     console.log("adding cron time");
     console.log(listingDetails)
     console.log(listingDetails.order_start, listingDetails.order_end, listingDetails.serving_start, listingDetails.serving_end)
-    const timings = [listingDetails.order_start, listingDetails.order_end, listingDetails.serving_start, listingDetails.serving_end];
+    const timings = timingFields.map(field => listingDetails[field]);
 
     timings.forEach(timing => {
         initCronJob(timing, listingDetails.meal_ID);
@@ -130,7 +127,7 @@ const addCronTimes = (listingDetails) => {
 const updateCronTimes = async (listingDetails) => {
     const originalDetails = await API.getMealDetails(listingDetails.meal_ID);
     console.log(originalDetails)
-    const timing_pairs = [[originalDetails.order_start, listingDetails.order_start],[originalDetails.order_end, listingDetails.order_end],[originalDetails.serving_start, listingDetails.serving_start],[originalDetails.serving_start, listingDetails.serving_start]]
+    const timing_pairs = timingFields.map(field => [originalDetails[field], listingDetails[field]]);
 
     timing_pairs.forEach(pair => {
         if(pair[0] !== pair[1]){//if the new timing is different from the original timing then create a new cron job
