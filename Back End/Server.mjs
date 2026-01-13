@@ -2,7 +2,6 @@
 import express from "express";
 import { Server } from 'socket.io';
 import * as API from "./Database.mjs";
-import { CronJob } from 'cron';
 import http from 'http';
 
 import { fileURLToPath } from 'url';
@@ -51,7 +50,7 @@ const serverStartCronInit = async () => {
 const calculateDelay = (expirationTime) => {
     const currentTime = new Date();
     const delay = expirationTime.getTime() - currentTime.getTime();
-    return delay > 0 ? Math.ceil(delay / (1000 * 60)): 0; // converts delay to minutes if the time has not passed, if it has it returns 0 so that the operation can be carried out instantly
+    return delay > 0 ? delay : 0;
 }
 
 const timingFields = ["order_start", "order_end", "serving_start", "serving_end"];
@@ -93,23 +92,18 @@ const updateMealField = async (meal_ID) => {
 
 const initCronJob = (timing, meal_ID) => {
     const currentTiming = new Date(timing);
-    const currentDelay = calculateDelay(currentTiming);
-    console.log(currentDelay);
-    if (currentDelay == 0){
+    const delayMs = calculateDelay(currentTiming);
+    if (delayMs === 0) {
         updateMealField(meal_ID).catch(error => console.error(error));
-    } else{
-        const job = new CronJob(
-            `*/${currentDelay} * * * *`, // Cron expression with calculated delay
-            () => {
-                updateMealField(meal_ID).catch(error => console.error(error));
-            },
-            null,
-            true,
-            'UTC' // Use UTC time zone to match the input timestamp
-        );
-        console.log(`Created Cron Job for Meal: ${meal_ID} in: ${currentDelay}`)
+        return;
     }
 
+    setTimeout(() => {
+        updateMealField(meal_ID).catch(error => console.error(error));
+    }, delayMs);
+
+    const delayMinutes = Math.ceil(delayMs / (1000 * 60));
+    console.log(`Scheduled Meal ${meal_ID} status update in ${delayMinutes} minutes`);
 }
 
 const addCronTimes = (listingDetails) => {
